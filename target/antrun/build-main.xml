@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="maven-antrun-" default="main"  >
 <target name="main">
-  <mkdir dir="E:\hadoop-datanode\hadoop-2.7.1-src\hadoop-common-project\hadoop-common\target/test-dir"/>
-  <mkdir dir="E:\hadoop-datanode\hadoop-2.7.1-src\hadoop-common-project\hadoop-common\target/test/data"/>
+  <mkdir dir="/Users/taojiaen/javaWorks/hadoopWorks/hadoop-2.7.1-src/hadoop-common-project/hadoop-common/target/test-dir"/>
+  <mkdir dir="/Users/taojiaen/javaWorks/hadoopWorks/hadoop-2.7.1-src/hadoop-common-project/hadoop-common/target/test/data"/>
 </target>
 </project>

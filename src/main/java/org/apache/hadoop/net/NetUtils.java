@@ -529,7 +529,12 @@ public class NetUtils {
     try {
       if (ch == null) {
         // let the default implementation handle it.
-        socket.connect(endpoint, timeout);
+				try {
+					socket.connect(endpoint, timeout);
+				} catch (UnsupportedOperationException ignore) {
+					socket.setSoTimeout(timeout);
+					socket.connect(endpoint);
+				}
       } else {
         SocketIOWithTimeout.connect(ch, endpoint, timeout);
       }
