@@ -346,6 +346,7 @@ abstract class SocketIOWithTimeout {
       try {
         while (true) {
           long start = (timeout == 0) ? 0 : Time.now();
+          //LOG.debug("channel 是什么鬼" + channel.getClass().getName());
           key = channel.register(info.selector, ops, null);
           ret = info.selector.select(timeout);
 
@@ -374,7 +375,7 @@ abstract class SocketIOWithTimeout {
         if (key != null) {
        if (!(info.selector instanceof SelectorUDT) ) {
            key.cancel();
-       } 
+       }
         }
 
         //clear the canceled key.
