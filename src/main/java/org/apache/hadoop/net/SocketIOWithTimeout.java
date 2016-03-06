@@ -189,12 +189,18 @@ abstract class SocketIOWithTimeout {
       channel.configureBlocking(false);
     }
 
+    SelectionKey key = null;
     try {
 			try {
 				if (channel.connect(endpoint)) {
 					return;
 				}
 			} catch (IllegalBlockingModeException ignore) {
+				key = selector.registe(channel);
+				if (channel.connect(endpoint)) {
+					return;
+				}
+				
 			}
 
       long timeoutLeft = timeout;
@@ -226,7 +232,9 @@ abstract class SocketIOWithTimeout {
       throw e;
     } finally {
       if (blockingOn && channel.isOpen()) {
+    	  try {
         channel.configureBlocking(true);
+    	  } catch(IllegalBlockingModeException ignore) {}
       }
     }
   }
@@ -310,6 +318,11 @@ abstract class SocketIOWithTimeout {
     private static final long IDLE_TIMEOUT = 10 * 1000; // 10 seconds.
 
     private ProviderInfo providerList = null;
+    
+    SelectionKey registe(SelectableChannel channel) throws IOException {
+    	SelectorInfo info = get(channel);
+    	return channel.register(info.selector, 0);
+    }
 
     /**
      * Waits on the channel with the given timeout using one of the
@@ -322,18 +335,15 @@ abstract class SocketIOWithTimeout {
      * @return
      * @throws IOException
      */
-    int select(SelectableChannel channel, int ops, long timeout)
-                                                   throws IOException {
+    int select(SelectableChannel channel, int ops, long timeout) throws IOException{
 
       SelectorInfo info = get(channel);
 
-      SelectionKey key = null;
       int ret = 0;
-
+      SelectionKey key = null;
       try {
         while (true) {
           long start = (timeout == 0) ? 0 : Time.now();
-
           key = channel.register(info.selector, ops);
           ret = info.selector.select(timeout);
 
