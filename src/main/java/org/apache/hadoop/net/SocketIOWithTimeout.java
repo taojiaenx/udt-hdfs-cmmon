@@ -36,6 +36,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.util.Time;
 
+import com.barchart.udt.nio.SelectorUDT;
+
 /**
  * This supports input and output streams for a socket channels.
  * These streams can have a timeout.
@@ -344,7 +346,8 @@ abstract class SocketIOWithTimeout {
       try {
         while (true) {
           long start = (timeout == 0) ? 0 : Time.now();
-          key = channel.register(info.selector, ops);
+          LOG.debug("channel 是什么鬼" + channel.getClass().getName());
+          key = channel.register(info.selector, ops, null);
           ret = info.selector.select(timeout);
 
           if (ret != 0) {
@@ -370,7 +373,9 @@ abstract class SocketIOWithTimeout {
         }
       } finally {
         if (key != null) {
-          key.cancel();
+       if (!(info.selector instanceof SelectorUDT) ) {
+           key.cancel();
+       } 
         }
 
         //clear the canceled key.
