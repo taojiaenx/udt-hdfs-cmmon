@@ -36,7 +36,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.util.Time;
 
-import com.barchart.udt.nio.SelectorUDT;
+import com.barchart.udt.nio.SelectionKeyUDT;
+
 
 /**
  * This supports input and output streams for a socket channels.
@@ -372,11 +373,9 @@ abstract class SocketIOWithTimeout {
 
         }
       } finally {
-        if (key != null) {
-       if (!(info.selector instanceof SelectorUDT) ) {
-           key.cancel();
-       }
-        }
+				if (key != null) {
+						key.cancel();
+				}
 
         //clear the canceled key.
         try {
